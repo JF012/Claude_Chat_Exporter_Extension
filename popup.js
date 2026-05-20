@@ -19,7 +19,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         setStatus('⚠️ Abre un chat de Claude primero', 'error');
         btnExport.disabled = true;
     } else {
-        setStatus('✅ Chat detected — ready to export', 'success');
+        setStatus('✅ Chat detectado — listo para exportar', 'success');
         btnExport.disabled = false;
     }
 });
