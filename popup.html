@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 280px;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6c3483, #2e86ab);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 2px;
+        }
+
+        .body {
+            padding: 16px;
+        }
+
+        #status {
+            font-size: 11px;
+            color: #aaa;
+            text-align: center;
+            margin-bottom: 12px;
+            min-height: 16px;
+        }
+
+        #status.error {
+            color: #e74c3c;
+        }
+
+        #status.success {
+            color: #2ecc71;
+        }
+
+        #status.loading {
+            color: #f39c12;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6c3483, #2e86ab);
+            color: white;
+        }
+
+        .footer {
+            padding: 10px 16px;
+            border-top: 1px solid #2a2a3e;
+            font-size: 10px;
+            color: #555;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Claude → Obsidian</h1>
+        <p>Chat Exporter</p>
+    </div>
+
+    <div class="body">
+        <div id="status">Open a Claude chat to export</div>
+        <button class="btn btn-primary" id="btnExport">
+            ⬇️ Export this chat
+        </button>
+    </div>
+
+    <div class="footer">
+        by JF012 · GitHub
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
