@@ -3,6 +3,12 @@
     "name": "Claude → Obsidian Exporter",
     "version": "1.0",
     "description": "Export your Claude chats to Obsidian-ready Markdown",
+    "icons": {
+        "16": "icons/icon-16.png",
+        "32": "icons/icon-32.png",
+        "48": "icons/icon-48.png",
+        "128": "icons/icon-128.png"
+    },
     "permissions": [
         "activeTab",
         "scripting"
@@ -12,7 +18,11 @@
     ],
     "action": {
         "default_popup": "popup.html",
-        "default_icon": "icon.png",
+        "default_icon": {
+            "16": "icons/icon-16.png",
+            "32": "icons/icon-32.png",
+            "48": "icons/icon-48.png"
+        },
         "default_title": "Export chat to Obsidian"
     },
     "content_scripts": [
