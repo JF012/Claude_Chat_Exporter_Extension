@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Claude → Obsidian Exporter",
     "version": "1.0",
-    "description": "Exporta tus chats de Claude a Markdown listo para Obsidian",
+    "description": "Export your Claude chats to Obsidian-ready Markdown",
     "permissions": [
         "activeTab",
         "scripting"
@@ -13,7 +13,7 @@
     "action": {
         "default_popup": "popup.html",
         "default_icon": "icon.png",
-        "default_title": "Exportar chat a Obsidian"
+        "default_title": "Export chat to Obsidian"
     },
     "content_scripts": [
         {

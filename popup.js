@@ -16,34 +16,34 @@ chrome.runtime.onMessage.addListener((msg) => {
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const url = tabs[0]?.url || '';
     if (!url.includes('claude.ai/chat/')) {
-        setStatus('⚠️ Abre un chat de Claude primero', 'error');
+        setStatus('⚠️ Open a claude chat first', 'error');
         btnExport.disabled = true;
     } else {
-        setStatus('✅ Chat detectado — listo para exportar', 'success');
+        setStatus('✅ Chat detected - ready to export', 'success');
         btnExport.disabled = false;
     }
 });
 
 btnExport.addEventListener('click', () => {
     btnExport.disabled = true;
-    setStatus('⏳ Exportando...', 'loading');
+    setStatus('⏳ Exporting...', 'loading');
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.tabs.sendMessage(tabs[0].id, { action: 'export' }, (response) => {
             if (chrome.runtime.lastError) {
-                setStatus('❌ Error de conexión. Recarga la página.', 'error');
+                setStatus('❌ Connection error, must reload', 'error');
                 btnExport.disabled = false;
                 return;
             }
 
             if (response?.success) {
                 if (response.format === 'zip') {
-                    setStatus(`✅ "${response.title}" exportado con ${response.images} imagen(es)`, 'success');
+                    setStatus(`✅ "${response.title}" exported with ${response.images} image(s)`);
                 } else {
-                    setStatus(`✅ "${response.title}" exportado (.md)`, 'success');
+                    setStatus(`✅ "${response.title}" exported (.md)`, 'success');
                 }
             } else {
-                setStatus(`❌ ${response?.error || 'Error desconocido'}`, 'error');
+                setStatus(`❌ ${response?.error || 'Unknown error'}`, 'error');
             }
 
             btnExport.disabled = false;

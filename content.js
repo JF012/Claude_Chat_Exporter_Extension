@@ -13,11 +13,11 @@ async function fetchImageAsBlob(url) {
 async function exportChat(progressCallback) {
     const chatId = window.location.pathname.split('/chat/')[1];
     if (!chatId) {
-        return { success: false, error: 'No estás en un chat de Claude.' };
+        return { success: false, error: 'Not on a Claude chat.' };
     }
 
     try {
-        progressCallback?.('Obteniendo datos del chat...');
+        progressCallback?.('Fetching chat data...');
         const orgs = await fetch('/api/organizations').then(r => r.json());
         const orgId = orgs[0].uuid;
 
@@ -31,9 +31,9 @@ async function exportChat(progressCallback) {
         let imageCount = 0;
         let md = '';
 
-        // --- Frontmatter YAML para Obsidian ---
+        // --- YAML Frontmatter for Obsidian ---
         md += `---\n`;
-        md += `title: "${(chat.name || 'Sin título').replace(/"/g, '\\"')}"\n`;
+        md += `title: "${(chat.name || 'Untitled').replace(/"/g, '\\"')}"\n`;
         md += `date: ${new Date(chat.created_at).toISOString().split('T')[0]}\n`;
         md += `model: ${chat.model || 'unknown'}\n`;
         md += `source: claude.ai\n`;
@@ -41,33 +41,33 @@ async function exportChat(progressCallback) {
         md += `tags:\n  - claude\n  - ai-chat\n`;
         md += `---\n\n`;
 
-        md += `# ${chat.name || 'Sin título'}\n\n`;
-        md += `> 📅 ${new Date(chat.created_at).toLocaleDateString()} | 💬 ${(chat.chat_messages || []).length} mensajes | 🧠 ${chat.model || ''}\n\n---\n\n`;
+        md += `# ${chat.name || 'Untitled'}\n\n`;
+        md += `> 📅 ${new Date(chat.created_at).toLocaleDateString()} | 💬 ${(chat.chat_messages || []).length} messages | 🧠 ${chat.model || ''}\n\n---\n\n`;
 
         const messages = chat.chat_messages || [];
         for (let i = 0; i < messages.length; i++) {
             const msg = messages[i];
-            const role = msg.sender === 'human' ? '🧑 Yo' : '🤖 Claude';
+            const role = msg.sender === 'human' ? '🧑 Me' : '🤖 Claude';
 
-            progressCallback?.(`Procesando mensaje ${i + 1}/${messages.length}...`);
+            progressCallback?.(`Processing message ${i + 1}/${messages.length}...`);
 
-            // --- El contenido principal está en msg.text ---
+            // --- Main content is in msg.text ---
             let text = msg.text || '';
 
-            // Marcar si el mensaje fue truncado por la API
+            // Flag if message was truncated by the API
             if (msg.truncated) {
-                text += '\n\n> ⚠️ *Este mensaje fue truncado por la API de Claude*\n';
+                text += '\n\n> ⚠️ *This message was truncated by Claude API*\n';
             }
 
-            // --- Imágenes subidas (files) ---
+            // --- Uploaded images (files) ---
             if (msg.files?.length > 0) {
                 for (const file of msg.files) {
                     if (file.file_kind === 'image') {
                         imageCount++;
-                        const fileName = file.file_name || `imagen_${String(imageCount).padStart(3, '0')}`;
+                        const fileName = file.file_name || `image_${String(imageCount).padStart(3, '0')}`;
                         const previewUrl = `/api/organizations/${orgId}/files/${file.file_uuid || file.uuid}/preview`;
 
-                        progressCallback?.(`Descargando imagen ${imageCount}: ${fileName}...`);
+                        progressCallback?.(`Downloading image ${imageCount}: ${fileName}...`);
                         const img = await fetchImageAsBlob(previewUrl);
 
                         if (img) {
@@ -75,25 +75,25 @@ async function exportChat(progressCallback) {
                             assetsFolder.file(finalName, img.blob);
                             text += `\n\n![${fileName}](assets/${finalName})\n`;
                         } else {
-                            text += `\n\n> 🖼️ Imagen: **${fileName}** (no se pudo descargar)\n`;
+                            text += `\n\n> 🖼️ Image: **${fileName}** (failed to download)\n`;
                         }
                     } else {
-                        // Archivos no-imagen (zip, pdf, etc.)
-                        text += `\n\n> 📎 Archivo: **${file.file_name}** (${(file.size_bytes / 1024).toFixed(1)} KB)\n`;
+                        // Non-image files (zip, pdf, etc.)
+                        text += `\n\n> 📎 File: **${file.file_name}** (${(file.size_bytes / 1024).toFixed(1)} KB)\n`;
                     }
                 }
             }
 
-            // --- Archivos adjuntos con contenido extraído ---
+            // --- Attachments with extracted content ---
             if (msg.attachments?.length > 0) {
                 for (const att of msg.attachments) {
                     if (att.extracted_content) {
                         const preview = att.extracted_content.length > 2000
-                            ? att.extracted_content.slice(0, 2000) + '\n... (contenido truncado)'
+                            ? att.extracted_content.slice(0, 2000) + '\n... (content truncated)'
                             : att.extracted_content;
                         text += `\n\n<details>\n<summary>📎 ${att.file_name}</summary>\n\n\`\`\`\n${preview}\n\`\`\`\n</details>\n`;
                     } else {
-                        text += `\n\n> 📎 Archivo adjunto: **${att.file_name}**\n`;
+                        text += `\n\n> 📎 Attachment: **${att.file_name}**\n`;
                     }
                 }
             }
@@ -104,7 +104,7 @@ async function exportChat(progressCallback) {
 
         zip.file(`${safeName}.md`, md);
 
-        // --- Si no hay imágenes, descargar solo el .md ---
+        // --- No images: download .md only ---
         if (imageCount === 0) {
             const blob = new Blob([md], { type: 'text/markdown' });
             const a = document.createElement('a');
@@ -114,8 +114,8 @@ async function exportChat(progressCallback) {
             return { success: true, title: chat.name || chatId, format: 'md', images: 0 };
         }
 
-        // --- Con imágenes, descargar como .zip ---
-        progressCallback?.(`Empaquetando ${imageCount} imagen(es) en ZIP...`);
+        // --- With images: download as .zip ---
+        progressCallback?.(`Packaging ${imageCount} image(s) into ZIP...`);
         const zipBlob = await zip.generateAsync({ type: 'blob' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(zipBlob);
@@ -137,7 +137,7 @@ async function exportChat(progressCallback) {
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.action === 'export') {
         exportChat((status) => {
-            chrome.runtime.sendMessage({ action: 'progress', status }).catch(() => {});
+            chrome.runtime.sendMessage({ action: 'progress', status }).catch(() => { });
         }).then(sendResponse);
         return true;
     }
