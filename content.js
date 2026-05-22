@@ -1,13 +1,25 @@
-async function fetchImageAsBlob(url) {
-    try {
-        const res = await fetch(url);
-        if (!res.ok) return null;
-        const blob = await res.blob();
-        const ext = blob.type.split('/')[1]?.replace('jpeg', 'jpg') || 'png';
-        return { blob, ext, type: blob.type };
-    } catch {
-        return null;
+async function fetchImageAsBlob(file, orgId) {
+    const urls = [
+        file.preview_url,
+        file.thumbnail_url,
+        file.preview_asset?.url,
+        `/api/${orgId}/files/${file.file_uuid || file.uuid}/preview`,
+        `/api/${orgId}/files/${file.file_uuid || file.uuid}/thumbnail`,
+    ].filter(Boolean);
+
+    for (const url of urls) {
+        try {
+            const res = await fetch(url, { credentials: 'include' });
+            if (!res.ok) continue;
+            const blob = await res.blob();
+            if (blob.size === 0) continue;
+            const ext = blob.type.split('/')[1]?.replace('jpeg', 'jpg') || 'png';
+            return { blob, ext, type: blob.type };
+        } catch {
+            continue;
+        }
     }
+    return null;
 }
 
 async function exportChat(progressCallback) {
@@ -65,10 +77,8 @@ async function exportChat(progressCallback) {
                     if (file.file_kind === 'image') {
                         imageCount++;
                         const fileName = file.file_name || `image_${String(imageCount).padStart(3, '0')}`;
-                        const previewUrl = `/api/organizations/${orgId}/files/${file.file_uuid || file.uuid}/preview`;
-
                         progressCallback?.(`Downloading image ${imageCount}: ${fileName}...`);
-                        const img = await fetchImageAsBlob(previewUrl);
+                        const img = await fetchImageAsBlob(file, orgId);
 
                         if (img) {
                             const finalName = fileName.includes('.') ? fileName : `${fileName}.${img.ext}`;
