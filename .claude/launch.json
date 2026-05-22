@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "popup-preview",
+      "runtimeExecutable": "py",
+      "runtimeArgs": ["-m", "http.server", "8111"],
+      "port": 8111
+    }
+  ]
+}

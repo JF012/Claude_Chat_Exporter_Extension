@@ -11,106 +11,351 @@
         }
 
         body {
-            width: 280px;
-            background: #1a1a2e;
-            color: #e0e0e0;
+            width: 300px;
+            min-height: 200px;
             font-family: 'Segoe UI', sans-serif;
+            color: #e0e0e0;
+            overflow: hidden;
+            position: relative;
         }
 
+        /* --- Animated living background --- */
+        .bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: linear-gradient(
+                135deg,
+                #0d0221, #1a0533, #0a1628, #0d0221
+            );
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            25%  { background-position: 100% 0%; }
+            50%  { background-position: 100% 100%; }
+            75%  { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- Floating orbs --- */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.5;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .orb-1 {
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #7c3aed, transparent 70%);
+            top: -30px;
+            left: -20px;
+            animation: float1 6s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #06b6d4, transparent 70%);
+            bottom: -20px;
+            right: -20px;
+            animation: float2 7s ease-in-out infinite;
+        }
+
+        .orb-3 {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #d946ef, transparent 70%);
+            top: 50%;
+            left: 60%;
+            animation: float3 5s ease-in-out infinite;
+        }
+
+        .orb-4 {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #2dd4bf, transparent 70%);
+            top: 30%;
+            left: 10%;
+            animation: float4 8s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33%      { transform: translate(30px, 20px) scale(1.1); }
+            66%      { transform: translate(-10px, 40px) scale(0.95); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33%      { transform: translate(-25px, -15px) scale(1.15); }
+            66%      { transform: translate(15px, -30px) scale(0.9); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+            50%      { transform: translate(-30px, -20px) scale(1.2); opacity: 0.6; }
+        }
+
+        @keyframes float4 {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            50%      { transform: translate(20px, 15px) scale(1.1); opacity: 0.5; }
+        }
+
+        /* --- Particles --- */
+        .particles {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: rise linear infinite;
+        }
+
+        .particle:nth-child(1)  { left: 10%; animation-duration: 4s;  animation-delay: 0s;   }
+        .particle:nth-child(2)  { left: 25%; animation-duration: 5s;  animation-delay: 1s;   }
+        .particle:nth-child(3)  { left: 40%; animation-duration: 3.5s; animation-delay: 0.5s; }
+        .particle:nth-child(4)  { left: 55%; animation-duration: 4.5s; animation-delay: 2s;   }
+        .particle:nth-child(5)  { left: 70%; animation-duration: 3s;  animation-delay: 1.5s; }
+        .particle:nth-child(6)  { left: 85%; animation-duration: 5.5s; animation-delay: 0.8s; }
+        .particle:nth-child(7)  { left: 15%; animation-duration: 4.2s; animation-delay: 2.5s; width: 3px; height: 3px; }
+        .particle:nth-child(8)  { left: 50%; animation-duration: 3.8s; animation-delay: 1.2s; }
+        .particle:nth-child(9)  { left: 75%; animation-duration: 4.8s; animation-delay: 0.3s; width: 1px; height: 1px; }
+        .particle:nth-child(10) { left: 35%; animation-duration: 5.2s; animation-delay: 1.8s; }
+
+        @keyframes rise {
+            0%   { bottom: -5px; opacity: 0; }
+            10%  { opacity: 0.8; }
+            90%  { opacity: 0.3; }
+            100% { bottom: 100%; opacity: 0; }
+        }
+
+        /* --- Content layer --- */
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* --- Header --- */
         .header {
-            background: linear-gradient(135deg, #6c3483, #2e86ab);
-            padding: 16px;
+            padding: 20px 16px 16px;
             text-align: center;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 16px;
+            right: 16px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), rgba(6, 182, 212, 0.5), transparent);
         }
 
         .header h1 {
-            font-size: 14px;
-            font-weight: 600;
-            color: white;
-            letter-spacing: 0.5px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #c084fc, #67e8f9, #c084fc);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0%   { background-position: 0% center; }
+            100% { background-position: 200% center; }
         }
 
         .header p {
             font-size: 10px;
-            color: rgba(255, 255, 255, 0.7);
-            margin-top: 2px;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 3px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
+        /* --- Body --- */
         .body {
-            padding: 16px;
+            padding: 18px 16px;
         }
 
         #status {
             font-size: 11px;
-            color: #aaa;
+            color: rgba(255, 255, 255, 0.5);
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             min-height: 16px;
+            transition: color 0.3s, text-shadow 0.3s;
         }
 
         #status.error {
-            color: #e74c3c;
+            color: #f87171;
+            text-shadow: 0 0 10px rgba(248, 113, 113, 0.3);
         }
 
         #status.success {
-            color: #2ecc71;
+            color: #34d399;
+            text-shadow: 0 0 10px rgba(52, 211, 153, 0.3);
         }
 
         #status.loading {
-            color: #f39c12;
+            color: #fbbf24;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+            animation: pulse-glow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; }
+            50%      { opacity: 0.6; }
+        }
+
+        /* --- Button --- */
+        .btn-wrap {
+            position: relative;
+            border-radius: 10px;
+            padding: 1px;
+            background: linear-gradient(135deg, #7c3aed, #06b6d4, #d946ef, #7c3aed);
+            background-size: 300% 300%;
+            animation: borderGlow 4s ease infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50%      { background-position: 100% 50%; }
         }
 
         .btn {
             width: 100%;
-            padding: 10px;
+            padding: 11px;
             border: none;
-            border-radius: 8px;
+            border-radius: 9px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s;
-            margin-bottom: 8px;
+            transition: all 0.3s;
+            background: rgba(13, 2, 33, 0.85);
+            color: #e2e8f0;
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(6, 182, 212, 0.15));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover::before {
+            opacity: 1;
         }
 
         .btn:hover {
-            opacity: 0.85;
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn:disabled {
-            opacity: 0.4;
+            opacity: 0.35;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #6c3483, #2e86ab);
-            color: white;
+        .btn:disabled::before {
+            display: none;
         }
 
+        /* --- Footer --- */
         .footer {
             padding: 10px 16px;
-            border-top: 1px solid #2a2a3e;
-            font-size: 10px;
-            color: #555;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.2);
             text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: rgba(192, 132, 252, 0.7);
         }
     </style>
 </head>
 
 <body>
-    <div class="header">
-        <h1>Claude → Obsidian</h1>
-        <p>Chat Exporter</p>
+    <!-- Living background -->
+    <div class="bg-canvas"></div>
+
+    <!-- Floating orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+
+    <!-- Rising particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
     </div>
 
-    <div class="body">
-        <div id="status">Open a Claude chat to export</div>
-        <button class="btn btn-primary" id="btnExport">
-            ⬇️ Export this chat
-        </button>
-    </div>
+    <!-- Content -->
+    <div class="content">
+        <div class="header">
+            <h1>Claude → Obsidian</h1>
+            <p>Chat Exporter</p>
+        </div>
 
-    <div class="footer">
-        by JF012 · GitHub
+        <div class="body">
+            <div id="status">Open a Claude chat to export</div>
+            <div class="btn-wrap">
+                <button class="btn" id="btnExport">
+                    Export this chat
+                </button>
+            </div>
+        </div>
+
+        <div class="footer">
+            by <a href="https://github.com/JF012" target="_blank">JF012</a>
+        </div>
     </div>
 
     <script src="popup.js"></script>
