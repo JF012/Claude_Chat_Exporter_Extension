@@ -1,4 +1,4 @@
-# 🔮 Claude → Chat Exporter
+# 🔮 Claude Web → Chat Exporter Extension
 
 **Your Claude chats, straight to Obsidian.**
 
