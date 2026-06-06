@@ -1,4 +1,4 @@
-# 🔮 Claude → Obsidian Chat Exporter
+# 🔮 Claude → Chat Exporter
 
 **Your Claude chats, straight to Obsidian.**
 
